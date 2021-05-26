@@ -34,16 +34,18 @@ let todos = [
       });
 
 
-      router.get("/get-todos-by-done/:done", function (req, res) {
-        const { done } = req.params;
-        let foundToDoIndex = todos.findIndex((item) => item.todo === name);
-        if (foundToDoIndex === -1) {
-          res.status(404).json({ message: "Please check name" });
-        } else {
-          let foundToDo = todos[foundToDoIndex];
-          res.json({ payload: foundToDo });
-        }
-      });
+        router.get("/get-todos-by-done/:done", function (req, res) {
+          let newDoneArray = [];
+          
+          todos.forEach(function (item) {
+            if (item.done === req.params.done) {
+              newDoneArray.push(item);
+            }
+          });
+          res.json(newDoneArray);
+        });
+
+
 
       router.post("/create-new-todo", function (req, res) {
         //check if req.body keys are empty
@@ -51,7 +53,7 @@ let todos = [
         if (todo.length === 0 || done.length === 0) {
           res.status(500).json({ message: "cannot leave text area blank" });
         }
-        //if game already exists
+        //if it already exists
         let foundToDoIndex = todos.findIndex((item) => item.todo === req.body.todo);
         if (foundToDoIndex > -1) {
           res.status(500).json({ message: "Sorry, todo already exists!" });
